@@ -19,7 +19,7 @@ env-port-forward:
 
 env-port-close:
 	@docker compose down port-forwarder
-	
+
 migrate-create:
 	@if [ -z "$(seq)" ]; then \
 		echo "Add param seq. Example: make migrate-create seq=init"; \
@@ -47,3 +47,8 @@ migrate-action:
 		-path /migrations \
 		-database postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@todoapp-postgres:5432/${POSTGRES_DB}?sslmode=disable \
 		"$(action)"
+
+todoapp-run:
+	@export LOGGER_FOLDER=${PROJECT_ROOT}/out/logs && \
+	go mod tidy && \
+	go run cmd/todoapp/main.go
