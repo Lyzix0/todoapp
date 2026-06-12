@@ -10,8 +10,8 @@ env-down:
 	@docker compose down todoapp-postgres
 
 env-cleanup:
-	@docker compose down todoapp-postgres; \
-	sudo rm -rf out/pgdata; \
+	@docker compose down todoapp-postgres port-forwarder; \
+	sudo rm -rf ${PROJECT_ROOT}/out/pgdata; \
 	echo "Files were cleaned!";
 
 env-port-forward:
@@ -19,7 +19,7 @@ env-port-forward:
 
 env-port-close:
 	@docker compose down port-forwarder
-	
+
 migrate-create:
 	@if [ -z "$(seq)" ]; then \
 		echo "Add param seq. Example: make migrate-create seq=init"; \
@@ -31,6 +31,7 @@ migrate-create:
 		-ext sql \
 		-dir /migrations \
 		-seq "$(seq)"
+
 
 migrate-up:
 	@make migrate-action action=up
@@ -47,3 +48,9 @@ migrate-action:
 		-path /migrations \
 		-database postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@todoapp-postgres:5432/${POSTGRES_DB}?sslmode=disable \
 		"$(action)"
+
+todoapp-run:
+	@export LOGGER_FOLDER=${PROJECT_ROOT}/out/logs && \
+	export POSTGRES_HOST=localhost && \
+	go mod tidy && \
+	go run ${PROJECT_ROOT}/cmd/todoapp/main.go
