@@ -6,7 +6,7 @@ import (
 	"time"
 
 	core_logger "github.com/Lyzix0/todoapp/internal/core/logger"
-	core_http_response "github.com/Lyzix0/todoapp/internal/core/transport/http/responce"
+	core_http_response "github.com/Lyzix0/todoapp/internal/core/transport/http/response"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
@@ -80,6 +80,7 @@ func Trace() Middleware {
 			before := time.Now()
 			log.Debug(
 				">>> incoming HTTP request",
+				zap.String("http_method", r.Method),
 				zap.Time("time", before.UTC()),
 			)
 
