@@ -54,3 +54,7 @@ todoapp-run:
 	export POSTGRES_HOST=localhost && \
 	go mod tidy && \
 	go run ${PROJECT_ROOT}/cmd/todoapp/main.go
+
+logs-cleanup:
+	@sudo rm -rf ${PROJECT_ROOT}/out/logs; \
+	echo "Logs were cleaned!";

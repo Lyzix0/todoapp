@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"time"
 
+	core_config "github.com/Lyzix0/todoapp/internal/core/config"
 	core_logger "github.com/Lyzix0/todoapp/internal/core/logger"
 	core_pgx_pool "github.com/Lyzix0/todoapp/internal/core/repository/postgres/pool/pgx"
 	core_http_middleware "github.com/Lyzix0/todoapp/internal/core/transport/http/middleware"
@@ -26,7 +27,8 @@ var (
 )
 
 func main() {
-	time.Local = timeZone
+	cfg := core_config.NewConfigMust()
+	time.Local = cfg.TimeZone
 
 	ctx, cancel := signal.NotifyContext(
 		context.Background(),
@@ -41,7 +43,7 @@ func main() {
 	}
 	defer logger.Close()
 
-	logger.Debug("application time zone", zap.Any("zone", timeZone))
+	logger.Debug("application time zone", zap.Any("zone", time.Local))
 
 	logger.Debug("initializing postgres connection pool")
 
