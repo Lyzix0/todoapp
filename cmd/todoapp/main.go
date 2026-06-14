@@ -13,6 +13,9 @@ import (
 	core_pgx_pool "github.com/Lyzix0/todoapp/internal/core/repository/postgres/pool/pgx"
 	core_http_middleware "github.com/Lyzix0/todoapp/internal/core/transport/http/middleware"
 	core_http_server "github.com/Lyzix0/todoapp/internal/core/transport/http/server"
+	stats_postres_repository "github.com/Lyzix0/todoapp/internal/features/stats/repository/postgres"
+	stats_service "github.com/Lyzix0/todoapp/internal/features/stats/service"
+	stats_transport_http "github.com/Lyzix0/todoapp/internal/features/stats/transport/http"
 	tasks_postgres_repository "github.com/Lyzix0/todoapp/internal/features/tasks/repository/postgres"
 	tasks_service "github.com/Lyzix0/todoapp/internal/features/tasks/service"
 	tasks_transport_http "github.com/Lyzix0/todoapp/internal/features/tasks/transport/http"
@@ -57,14 +60,22 @@ func main() {
 	defer pool.Close()
 
 	logger.Debug("initializing feature", zap.String("feature", "users"))
+
 	usersRepository := users_postgres_repository.NewUsersRepository(pool)
 	usersService := users_service.NewUsersService(usersRepository)
 	usersTransportHTTP := users_transport_http.NewUsersHTTPHandler(usersService)
 
 	logger.Debug("initializing feature", zap.String("feature", "tasks"))
+
 	tasksRepository := tasks_postgres_repository.NewTasksRepository(pool)
 	tasksService := tasks_service.NewTasksService(tasksRepository)
 	tasksTransportHTTP := tasks_transport_http.NewTasksHTTPHandler(tasksService)
+
+	logger.Debug("initializing feature", zap.String("feature", "stats"))
+
+	statsRepository := stats_postres_repository.NewStatsRepository(pool)
+	statsService := stats_service.NewStatsService(statsRepository)
+	statsTransportHTTP := stats_transport_http.NewStatsHTTPHandler(statsService)
 
 	logger.Debug("initializing HTTP server")
 
@@ -80,6 +91,7 @@ func main() {
 	apiVersionRouterV1 := core_http_server.NewAPIVersionRouter(core_http_server.ApiVersion1)
 	apiVersionRouterV1.RegisterRoutes(usersTransportHTTP.Routes()...)
 	apiVersionRouterV1.RegisterRoutes(tasksTransportHTTP.Routes()...)
+	apiVersionRouterV1.RegisterRoutes(statsTransportHTTP.Routes()...)
 	httpServer.RegisterAPIRouters(apiVersionRouterV1)
 
 	// apiVersionRouterV2 := core_http_server.NewAPIVersionRouter(
