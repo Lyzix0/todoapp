@@ -1418,7 +1418,7 @@
 'use strict';
 
 // ─── State ───────────────────────────────────────────────
-let API_BASE = 'http://localhost:5050/api/v1';
+let API_BASE = '/api/v1';
 let _taskEditing = false;
 let _taskId      = null;
 let _userEditing = false;
@@ -1941,7 +1941,7 @@ async function submitTask() {
             closeModal('task-modal-overlay'); loadTasks();
         } catch(e) { toast(e.message, 'error'); }
     } else {
-        const authorId = document.getElementById('task-author-id').value.trim();
+        const authorId = parseInt(document.getElementById('task-author-id').value.trim(), 10);
         if (!authorId) { toast('Author User ID is required', 'error'); return; }
         const body = { title, author_user_id: authorId };
         if (desc) body.description = desc;
