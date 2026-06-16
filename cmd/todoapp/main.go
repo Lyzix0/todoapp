@@ -22,6 +22,9 @@ import (
 	users_postgres_repository "github.com/Lyzix0/todoapp/internal/features/users/repository/postgres"
 	users_service "github.com/Lyzix0/todoapp/internal/features/users/service"
 	users_transport_http "github.com/Lyzix0/todoapp/internal/features/users/transport/http"
+	web_fs_repository "github.com/Lyzix0/todoapp/internal/features/web/repository/file_system"
+	web_service "github.com/Lyzix0/todoapp/internal/features/web/service"
+	web_transport_http "github.com/Lyzix0/todoapp/internal/features/web/transport/http"
 	"go.uber.org/zap"
 
 	_ "github.com/Lyzix0/todoapp/docs"
@@ -81,6 +84,11 @@ func main() {
 	statsService := stats_service.NewStatsService(statsRepository)
 	statsTransportHTTP := stats_transport_http.NewStatsHTTPHandler(statsService)
 
+	logger.Debug("ininitalizing feature", zap.String("feature", "web"))
+	webRepository := web_fs_repository.NewWebRepository()
+	webService := web_service.NewWebService(webRepository)
+	webTransportHTTP := web_transport_http.NewWebHTTPHandler(webService)
+
 	logger.Debug("initializing HTTP server")
 
 	httpServer := core_http_server.NewHTTPServer(
@@ -99,7 +107,7 @@ func main() {
 	apiVersionRouterV1.RegisterRoutes(statsTransportHTTP.Routes()...)
 
 	httpServer.RegisterAPIRouters(apiVersionRouterV1)
-
+	httpServer.RegisterRoutes(webTransportHTTP.Routes()...)
 	httpServer.RegisterSwagger()
 
 	// apiVersionRouterV2 := core_http_server.NewAPIVersionRouter(
