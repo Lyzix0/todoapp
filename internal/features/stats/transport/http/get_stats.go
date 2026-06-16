@@ -18,6 +18,18 @@ type GetStatsResponse struct {
 	TasksAverageCompletionTime *string  `json:"tasks_averate_completion_time"`
 }
 
+// GetStats godoc
+// @Summary get stats
+// @Description get tasks statistics for all tasks or by UserID
+// @Tags stats
+// @Produce json
+// @Param user_id query int false "filter stats by userID"
+// @Param from query string false "starting interval"
+// @Param to query string false "end interval"
+// @Success 200 {object} GetStatsResponse "Successfull get statistics"
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /stats [get]
 func (h *StatsHTTPHandler) GetStats(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

@@ -1,0 +1,604 @@
+basePath: /api/v1
+definitions:
+  github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse:
+    properties:
+      error:
+        example: full error text
+        type: string
+      message:
+        example: short human-readable message
+        type: string
+    type: object
+  github_com_Lyzix0_todoapp_internal_core_transport_http_types.Nullable-bool:
+    properties:
+      set:
+        type: boolean
+      value:
+        type: boolean
+    type: object
+  github_com_Lyzix0_todoapp_internal_core_transport_http_types.Nullable-string:
+    properties:
+      set:
+        type: boolean
+      value:
+        type: string
+    type: object
+  internal_features_stats_transport_http.GetStatsResponse:
+    properties:
+      tasks_averate_completion_time:
+        type: string
+      tasks_completed:
+        type: integer
+      tasks_completed_rate:
+        type: number
+      tasks_created:
+        type: integer
+    type: object
+  internal_features_tasks_transport_http.CreateTaskRequest:
+    properties:
+      author_user_id:
+        example: 2
+        type: integer
+      description:
+        example: Make until Tuesday
+        maxLength: 1000
+        minLength: 1
+        type: string
+      title:
+        example: Make homework
+        maxLength: 100
+        minLength: 1
+        type: string
+    required:
+    - author_user_id
+    - title
+    type: object
+  internal_features_tasks_transport_http.GetTaskResponse:
+    properties:
+      author_user_id:
+        type: integer
+      completed:
+        example: false
+        type: boolean
+      completed_at:
+        example: "null"
+        type: string
+      created_at:
+        example: "2026-02-26T10:40:00Z"
+        type: string
+      description:
+        example: Make Math tasks
+        type: string
+      id:
+        example: 14
+        type: integer
+      title:
+        example: Homework
+        type: string
+      version:
+        example: 2
+        type: integer
+    type: object
+  internal_features_tasks_transport_http.PatchTaskRequest:
+    properties:
+      completed:
+        $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_types.Nullable-bool'
+      description:
+        $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_types.Nullable-string'
+      title:
+        $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_types.Nullable-string'
+    type: object
+  internal_features_tasks_transport_http.PatchTaskResponse:
+    properties:
+      author_user_id:
+        type: integer
+      completed:
+        example: false
+        type: boolean
+      completed_at:
+        example: "null"
+        type: string
+      created_at:
+        example: "2026-02-26T10:40:00Z"
+        type: string
+      description:
+        example: Make Math tasks
+        type: string
+      id:
+        example: 14
+        type: integer
+      title:
+        example: Homework
+        type: string
+      version:
+        example: 2
+        type: integer
+    type: object
+  internal_features_tasks_transport_http.TaskDTOResponse:
+    properties:
+      author_user_id:
+        type: integer
+      completed:
+        example: false
+        type: boolean
+      completed_at:
+        example: "null"
+        type: string
+      created_at:
+        example: "2026-02-26T10:40:00Z"
+        type: string
+      description:
+        example: Make Math tasks
+        type: string
+      id:
+        example: 14
+        type: integer
+      title:
+        example: Homework
+        type: string
+      version:
+        example: 2
+        type: integer
+    type: object
+  internal_features_users_transport_http.CreateUserRequest:
+    properties:
+      full_name:
+        example: Ivan Ivanov
+        maxLength: 100
+        minLength: 3
+        type: string
+      phone_number:
+        example: "+79918829949"
+        maxLength: 15
+        minLength: 10
+        type: string
+    required:
+    - full_name
+    type: object
+  internal_features_users_transport_http.CreateUserResponse:
+    properties:
+      full_name:
+        example: Max Maximov
+        type: string
+      id:
+        example: 10
+        type: integer
+      phone_number:
+        example: "+79919599245"
+        type: string
+      version:
+        example: 3
+        type: integer
+    type: object
+  internal_features_users_transport_http.GetUserResponse:
+    properties:
+      full_name:
+        example: Max Maximov
+        type: string
+      id:
+        example: 10
+        type: integer
+      phone_number:
+        example: "+79919599245"
+        type: string
+      version:
+        example: 3
+        type: integer
+    type: object
+  internal_features_users_transport_http.PatchUserRequest:
+    properties:
+      full_name:
+        example: Max maximov
+        type: string
+      phone_number:
+        example: "+71995925602"
+        type: string
+    type: object
+  internal_features_users_transport_http.PatchUserResponse:
+    properties:
+      full_name:
+        example: Max Maximov
+        type: string
+      id:
+        example: 10
+        type: integer
+      phone_number:
+        example: "+79919599245"
+        type: string
+      version:
+        example: 3
+        type: integer
+    type: object
+  internal_features_users_transport_http.UserDTOResponse:
+    properties:
+      full_name:
+        example: Max Maximov
+        type: string
+      id:
+        example: 10
+        type: integer
+      phone_number:
+        example: "+79919599245"
+        type: string
+      version:
+        example: 3
+        type: integer
+    type: object
+host: 127.0.0.1:5050
+info:
+  contact: {}
+  description: Todoapp REST-API scheme
+  title: Golang Todoapp api
+  version: "1.0"
+paths:
+  /stats:
+    get:
+      description: get tasks statistics for all tasks or by UserID
+      parameters:
+      - description: filter stats by userID
+        in: query
+        name: user_id
+        type: integer
+      - description: starting interval
+        in: query
+        name: from
+        type: string
+      - description: end interval
+        in: query
+        name: to
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfull get statistics
+          schema:
+            $ref: '#/definitions/internal_features_stats_transport_http.GetStatsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: get stats
+      tags:
+      - stats
+  /tasks:
+    get:
+      description: View task list with optional pagination and UserID
+      parameters:
+      - description: Tasks page size
+        in: query
+        name: limit
+        type: integer
+      - description: Tasks page offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully get tasks
+          schema:
+            items:
+              $ref: '#/definitions/internal_features_tasks_transport_http.TaskDTOResponse'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Server internal error
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Task list
+      tags:
+      - tasks
+    post:
+      consumes:
+      - application/json
+      description: Create new task in the database
+      parameters:
+      - description: CreateTask request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_tasks_transport_http.CreateTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created task
+          schema:
+            $ref: '#/definitions/internal_features_tasks_transport_http.CreateTaskRequest'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Author not found
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Create task
+      tags:
+      - tasks
+  /tasks/{id}:
+    delete:
+      description: Delete task by task ID
+      parameters:
+      - description: ID task we want to delete
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: Successful task deletion
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Task not found
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Delete task
+      tags:
+      - tasks
+    get:
+      description: Get task by id
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Task was found
+          schema:
+            $ref: '#/definitions/internal_features_tasks_transport_http.GetTaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Task not found
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Get task
+      tags:
+      - tasks
+    patch:
+      consumes:
+      - application/json
+      description: |-
+        Edit task information in database
+        ### Three-state logic:
+        1. Field wasn't in request: field is ignored
+        2. Field was transferred: database changes it
+        3. Field = null: database clears it
+        4. `title` and `complete` can't be null
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: PatchTask request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_tasks_transport_http.PatchTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully edit task
+          schema:
+            $ref: '#/definitions/internal_features_tasks_transport_http.PatchTaskResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Task not found
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Edit task
+      tags:
+      - tasks
+  /users:
+    get:
+      description: View user list with optional pagination
+      parameters:
+      - description: User page size
+        in: query
+        name: limit
+        type: integer
+      - description: User page offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully get users
+          schema:
+            items:
+              $ref: '#/definitions/internal_features_users_transport_http.UserDTOResponse'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Server internal error
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: User list
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Create new user in the database
+      parameters:
+      - description: CreateUser request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_users_transport_http.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created user
+          schema:
+            $ref: '#/definitions/internal_features_users_transport_http.CreateUserResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Create user
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      description: Delete user by his ID
+      parameters:
+      - description: ID user we want to delete
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: Successful user deletion
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Delete user
+      tags:
+      - users
+    get:
+      description: Get user by id
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User was found
+          schema:
+            $ref: '#/definitions/internal_features_users_transport_http.GetUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Get user
+      tags:
+      - users
+    patch:
+      consumes:
+      - application/json
+      description: |-
+        Edit user information in database
+        ### Three-state logic:
+        1. Field wasn't in request: field is ignored
+        2. Field was transferred: database changes it
+        3. Field = null: database clears it
+        4. full_name can't be null
+      parameters:
+      - description: User id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: PatchUser request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_users_transport_http.PatchUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully edit user
+          schema:
+            $ref: '#/definitions/internal_features_users_transport_http.PatchUserResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_Lyzix0_todoapp_internal_core_transport_http_response.ErrorResponse'
+      summary: Edit user
+      tags:
+      - users
+swagger: "2.0"

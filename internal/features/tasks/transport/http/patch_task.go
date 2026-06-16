@@ -49,6 +49,25 @@ func (r *PatchTaskRequest) Validate() error {
 
 type PatchTaskResponse TaskDTOResponse
 
+// PatchTask godoc
+// @Summary Edit task
+// @Description Edit task information in database
+// @Description ### Three-state logic:
+// @Description 1. Field wasn't in request: field is ignored
+// @Description 2. Field was transferred: database changes it
+// @Description 3. Field = null: database clears it
+// @Description 4. `title` and `complete` can't be null
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param id path int true "Task ID"
+// @Param request body PatchTaskRequest true "PatchTask request body"
+// @Success 200 {object} PatchTaskResponse "Successfully edit task"
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 404 {object} core_http_response.ErrorResponse "Task not found"
+// @Failure 409 {object} core_http_response.ErrorResponse "Conflict"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /tasks/{id} [patch]
 func (h *TasksHTTPHandler) PatchTask(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

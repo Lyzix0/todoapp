@@ -23,11 +23,15 @@ import (
 	users_service "github.com/Lyzix0/todoapp/internal/features/users/service"
 	users_transport_http "github.com/Lyzix0/todoapp/internal/features/users/transport/http"
 	"go.uber.org/zap"
+
+	_ "github.com/Lyzix0/todoapp/docs"
 )
 
-var (
-	timeZone = time.UTC
-)
+// @title Golang Todoapp api
+// @version 1.0
+// @description Todoapp REST-API scheme
+// @host 127.0.0.1:5050
+// @BasePath /api/v1
 
 func main() {
 	cfg := core_config.NewConfigMust()
@@ -82,6 +86,7 @@ func main() {
 	httpServer := core_http_server.NewHTTPServer(
 		core_http_server.NewConfigMust(),
 		logger,
+		core_http_middleware.CORS(),
 		core_http_middleware.RequestID(),
 		core_http_middleware.Logger(logger),
 		core_http_middleware.Trace(),
@@ -92,7 +97,10 @@ func main() {
 	apiVersionRouterV1.RegisterRoutes(usersTransportHTTP.Routes()...)
 	apiVersionRouterV1.RegisterRoutes(tasksTransportHTTP.Routes()...)
 	apiVersionRouterV1.RegisterRoutes(statsTransportHTTP.Routes()...)
+
 	httpServer.RegisterAPIRouters(apiVersionRouterV1)
+
+	httpServer.RegisterSwagger()
 
 	// apiVersionRouterV2 := core_http_server.NewAPIVersionRouter(
 	// 	core_http_server.ApiVersion2,
