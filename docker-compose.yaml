@@ -17,6 +17,7 @@ services:
       
       - POSTGRES_HOST=todoapp-postgres
       - LOGGER_FOLDER=/app/out/logs
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
     volumes:
       - ${PROJECT_ROOT}/out/logs:/app/out/logs
     ports:
