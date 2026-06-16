@@ -13,8 +13,8 @@ import (
 )
 
 type PatchUserRequest struct {
-	FullName    core_http_types.Nullable[string] `json:"full_name"`
-	PhoneNumber core_http_types.Nullable[string] `json:"phone_number"`
+	FullName    core_http_types.Nullable[string] `json:"full_name"  swaggertype:"string" example:"Max maximov"`
+	PhoneNumber core_http_types.Nullable[string] `json:"phone_number"  swaggertype:"string" example:"+71995925602"`
 }
 
 func (r *PatchUserRequest) Validate() error {
@@ -47,6 +47,25 @@ func (r *PatchUserRequest) Validate() error {
 
 type PatchUserResponse UserDTOResponse
 
+// PatchUser godoc
+// @Summary Edit user
+// @Description Edit user information in database
+// @Description ### Three-state logic:
+// @Description 1. Field wasn't in request: field is ignored
+// @Description 2. Field was transferred: database changes it
+// @Description 3. Field = null: database clears it
+// @Description 4. full_name can't be null
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int true "User id"
+// @Param request body PatchUserRequest true "PatchUser request body"
+// @Success 200 {object} PatchUserResponse "Successfully edit user"
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 404 {object} core_http_response.ErrorResponse "User not found"
+// @Failure 409 {object} core_http_response.ErrorResponse "Conflict"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /users/{id} [patch]
 func (h *UsersHTTPHandler) PatchUser(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

@@ -6,20 +6,31 @@ import (
 	"github.com/Lyzix0/todoapp/internal/core/domain"
 	core_logger "github.com/Lyzix0/todoapp/internal/core/logger"
 	core_http_request "github.com/Lyzix0/todoapp/internal/core/transport/http/request"
-	core_http_responce "github.com/Lyzix0/todoapp/internal/core/transport/http/response"
+	core_http_response "github.com/Lyzix0/todoapp/internal/core/transport/http/response"
 )
 
 type CreateUserRequest struct {
-	FullName    string  `json:"full_name" validate:"required,min=3,max=100"`
-	PhoneNumber *string `json:"phone_number" validate:"omitempty,min=10,max=15,startswith=+"`
+	FullName    string  `json:"full_name" validate:"required,min=3,max=100"  example:"Ivan Ivanov"`
+	PhoneNumber *string `json:"phone_number" validate:"omitempty,min=10,max=15,startswith=+"  example:"+79918829949"`
 }
 
 type CreateUserResponse UserDTOResponse
 
+// CreateUser godoc
+// @Summary Create user
+// @Description Create new user in the database
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param request body CreateUserRequest true "CreateUser request body"
+// @Success 201 {object} CreateUserResponse "Successfully created user"
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /users [post]
 func (h *UsersHTTPHandler) CreateUser(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
-	responseHandler := core_http_responce.NewHTTPResponseHandler(log, rw)
+	responseHandler := core_http_response.NewHTTPResponseHandler(log, rw)
 
 	var request CreateUserRequest
 	if err := core_http_request.DecodeAndValidateRequest(r, &request); err != nil {

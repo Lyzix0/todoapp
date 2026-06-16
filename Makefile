@@ -64,3 +64,17 @@ ps:
 logs-cleanup:
 	@sudo rm -rf ${PROJECT_ROOT}/out/logs; \
 	echo "Logs were cleaned!";
+
+swagger-build:
+	@docker compose build --no-cache swagger
+
+todoapp-undeploy:
+	@docker compose down
+	
+swagger-gen:
+	@docker compose run --rm swagger \
+		init \
+		-g cmd/todoapp/main.go \
+		-o docs \
+		--parseInternal \
+		--parseDependency
